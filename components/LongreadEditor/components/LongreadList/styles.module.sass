@@ -1,0 +1,126 @@
+.root
+  position: relative
+
+.titleContainer
+  .title
+    min-height: 26px
+
+.list
+  position: relative
+  margin-top: 16px
+
+  .list
+    margin-top: 8px
+    margin-left: 32px
+
+.listItem
+  position: relative
+  margin-bottom: 16px
+
+  &:last-child
+    margin-bottom: 0
+
+  .row
+    position: relative
+
+    .point
+      position: absolute
+      top: 0
+      left: 12px
+      width: 10px
+      height: 10px
+      margin: 8px
+      border-radius: 50%
+      background-color: #080809
+
+    .circle
+      position: absolute
+      top: 0
+      left: 0
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 26px
+      height: 26px
+      border-radius: 50%
+      border: 1px solid #080809
+
+    .letter
+      position: absolute
+      top: 0
+      left: 0
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 24px
+      height: 24px
+      font-size: 16px
+      line-height: 20px
+
+    .content
+      margin-left: 50px
+      margin-right: 144px
+
+      &.ordered
+        margin-left: 38px
+
+      &:not(.editable)
+        margin-right: 0
+
+      .item
+        min-height: 26px
+        line-height: 26px
+
+  .list
+    .row
+      margin-bottom: 8px
+
+      &:last-child
+        margin-bottom: 0
+
+      .point
+        margin: 7px
+        border: 1px solid #080809
+        background-color: transparent
+
+      .content
+        margin-left: 42px
+        margin-right: 108px
+
+        &.ordered
+          margin-left: 30px
+
+        .item
+          min-height: 24px
+          line-height: 24px
+          font-size: 16px
+
+.addButton
+  border: none
+  box-shadow: none
+  color: #0055FF
+  margin-top: 16px
+
+  &:hover
+    background-color: #E0EDFF
+
+.toolbar
+  position: absolute
+  top: 0
+  right: 0
+
+.button
+  margin-right: 12px
+  box-shadow: none
+
+  &:last-child
+    margin-right: 0
+
+.addButton
+  border: none
+  box-shadow: none
+  color: #0055FF
+  margin-top: 16px
+
+  &:hover
+    background-color: #E0EDFF

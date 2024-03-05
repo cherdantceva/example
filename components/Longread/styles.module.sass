@@ -1,0 +1,74 @@
+@import "src/stylesheets/vars"
+
+.root
+  padding: 16px 20px 0
+  color: #262626
+  background-color: #fff
+
+.form
+  padding: 16px 50px 70px 0
+
+  @include screenSizeMaxS
+    padding: 0
+
+.title
+  font-size: 20px
+  line-height: 30px
+  margin-bottom: 24px
+
+.footer
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  height: 70px
+  width: 100%
+  border-top: 1px solid #E8E8E8
+  background-color: #fff
+  position: fixed
+  left: 0
+  bottom: 0
+  padding: 0 70px
+  z-index: 100
+
+  @include screenSizeMaxS
+    padding: 0 20px
+
+.buttons
+  display: flex
+  max-width: 100%
+
+  @include screenSizeMaxS
+    width: 100%
+    justify-content: space-between
+
+.btn
+  display: flex !important
+  align-items: center
+  margin-right: 10px
+
+  &:last-child
+    margin-right: 0
+
+.field
+  max-width: 800px
+  margin-bottom: 32px
+
+  &.timeField
+    max-width: 320px
+
+  &.longreadField
+    max-width: initial
+
+.inputError:not(:focus)
+  border-color: #F5222D !important
+
+.label
+  font-weight: 600
+  font-size: 16px
+  line-height: 24px
+  margin-bottom: 2px
+
+.optionalText
+  font-weight: 400
+  font-size: 14px
+  line-height: 22px
