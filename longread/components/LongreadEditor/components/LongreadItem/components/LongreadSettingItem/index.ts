@@ -1,1 +1,1 @@
-export { default } from './LongreadSettingItem'
+export { default } from './LongreadSettingItem';

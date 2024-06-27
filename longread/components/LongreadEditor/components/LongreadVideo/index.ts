@@ -1,1 +1,1 @@
-export { default } from './LongreadVideo'
+export { default } from './LongreadVideo';

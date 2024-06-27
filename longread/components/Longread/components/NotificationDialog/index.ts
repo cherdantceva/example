@@ -1,2 +1,2 @@
-export { default } from './NotificationDialog'
-export type { Notification } from './NotificationDialog'
+export { default } from './NotificationDialog';
+export type { Notification } from './NotificationDialog';

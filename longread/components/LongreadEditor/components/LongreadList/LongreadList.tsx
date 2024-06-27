@@ -1,12 +1,14 @@
-import React, { useCallback, useMemo } from 'react'
-import cx from 'classnames'
-import { PlusCircleOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
-import styles from 'features/longread/lib/styles.module.sass'
-import type { LongreadListElement, LongreadListElementItem } from 'features/longread/lib/types'
-import ContentEditable from '../ContentEditable'
-import LongreadListItem from './LongreadListItem'
-import css from './styles.module.sass'
+import React, { useCallback, useMemo } from 'react';
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import cx from 'classnames';
+import styles from 'features/longread/lib/styles.module.sass';
+import type {
+  LongreadListElement,
+  LongreadListElementItem,
+} from 'features/longread/lib/types';
+import LongreadListItem from './LongreadListItem';
+import css from './styles.module.sass';
 import {
   addNewListItem,
   addNewListItemAfter,
@@ -16,29 +18,39 @@ import {
   downListItem,
   getMediumEditorOptionsListTitle,
   upListItem,
-} from './utils'
+} from './utils';
+import ContentEditable from '../ContentEditable';
 
 interface LongreadListProps {
-  list: LongreadListElement
-  editable: boolean
-  onBlur: () => void
-  onFocus: () => void
-  onChange: (item: LongreadListElement) => void
+  list: LongreadListElement;
+  editable: boolean;
+  onBlur: () => void;
+  onFocus: () => void;
+  onChange: (item: LongreadListElement) => void;
 }
 
-const LongreadList: React.FC<LongreadListProps> = ({ list, editable, onBlur, onFocus, onChange }) => {
-  const listItems = useMemo(() => list.items.filter(({ parentId }) => parentId === list.id), [list])
+const LongreadList: React.FC<LongreadListProps> = ({
+  list,
+  editable,
+  onBlur,
+  onFocus,
+  onChange,
+}) => {
+  const listItems = useMemo(
+    () => list.items.filter(({ parentId }) => parentId === list.id),
+    [list],
+  );
 
   const handleTitleChange = useCallback(
-    (value) => {
-      onChange(changeTitle(list, value))
+    value => {
+      onChange(changeTitle(list, value));
     },
-    [list, onChange]
-  )
+    [list, onChange],
+  );
 
   const handleAddItemClick = useCallback(() => {
-    onChange(addNewListItem(list))
-  }, [list, onChange])
+    onChange(addNewListItem(list));
+  }, [list, onChange]);
 
   const listItemHandlers = useMemo(
     () => ({
@@ -48,27 +60,27 @@ const LongreadList: React.FC<LongreadListProps> = ({ list, editable, onBlur, onF
             list,
             listItem,
             value,
-          })
-        )
+          }),
+        );
       },
       upListItem: (listItem: LongreadListElementItem) => {
-        onChange(upListItem(list, listItem))
+        onChange(upListItem(list, listItem));
       },
       downListItem: (listItem: LongreadListElementItem) => {
-        onChange(downListItem(list, listItem))
+        onChange(downListItem(list, listItem));
       },
       deleteListItem: (listItem: LongreadListElementItem) => {
-        onChange(deleteListItem(list, listItem))
+        onChange(deleteListItem(list, listItem));
       },
       addNewListItem: (listItem: LongreadListElementItem) => {
-        onChange(addNewListItem(list, listItem.id))
+        onChange(addNewListItem(list, listItem.id));
       },
       addNewListItemAfter: (listItem: LongreadListElementItem) => {
-        onChange(addNewListItemAfter(list, listItem))
+        onChange(addNewListItemAfter(list, listItem));
       },
     }),
-    [list, onChange]
-  )
+    [list, onChange],
+  );
 
   return (
     <div className={css.root}>
@@ -84,7 +96,7 @@ const LongreadList: React.FC<LongreadListProps> = ({ list, editable, onBlur, onF
       />
       <div className={css.list}>
         {listItems
-          .filter((listItem) => editable || listItem.value)
+          .filter(listItem => editable || listItem.value)
           .map((listItem, index, items) => (
             <div key={listItem.id} className={css.listItem}>
               <LongreadListItem
@@ -104,12 +116,16 @@ const LongreadList: React.FC<LongreadListProps> = ({ list, editable, onBlur, onF
           ))}
       </div>
       {editable && (
-        <Button className={css.addButton} icon={<PlusCircleOutlined />} onClick={handleAddItemClick}>
+        <Button
+          className={css.addButton}
+          icon={<PlusCircleOutlined />}
+          onClick={handleAddItemClick}
+        >
           Добавить пункт
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(LongreadList)
+export default React.memo(LongreadList);

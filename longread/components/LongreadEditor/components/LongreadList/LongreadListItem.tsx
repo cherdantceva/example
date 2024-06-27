@@ -1,38 +1,43 @@
-import React, { useMemo } from 'react'
-import cx from 'classnames'
-import { ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, UnorderedListOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
-import styles from 'features/longread/lib/styles.module.sass'
-import type { LongreadListElementItem } from 'features/longread/lib/types'
-import { getCyrillicLetterByIndex } from 'features/longread/lib/utils'
-import { createGetterMediumEditorOptions } from 'features/longread/utils'
-import ContentEditable from '../ContentEditable'
-import css from './styles.module.sass'
+import React, { useMemo } from 'react';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  DeleteOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
+import { Button } from 'antd';
+import cx from 'classnames';
+import styles from 'features/longread/lib/styles.module.sass';
+import type { LongreadListElementItem } from 'features/longread/lib/types';
+import { getCyrillicLetterByIndex } from 'features/longread/lib/utils';
+import { createGetterMediumEditorOptions } from 'features/longread/utils';
+import css from './styles.module.sass';
+import ContentEditable from '../ContentEditable';
 
 const getMediumEditorOptions = createGetterMediumEditorOptions({
   acceptedButtons: ['bold', 'italic', 'strikethrough', 'anchor', 'superscript'],
-})
+});
 
 interface LongreadListItemProps {
-  item: LongreadListElementItem
-  list: LongreadListElementItem[]
-  index: number
-  level?: number
-  ordered: boolean
-  editable: boolean
-  isFirsItem: boolean
-  isLastItem: boolean
-  disabledDelete?: boolean
-  onBlur: () => void
-  onFocus: () => void
+  item: LongreadListElementItem;
+  list: LongreadListElementItem[];
+  index: number;
+  level?: number;
+  ordered: boolean;
+  editable: boolean;
+  isFirsItem: boolean;
+  isLastItem: boolean;
+  disabledDelete?: boolean;
+  onBlur: () => void;
+  onFocus: () => void;
   handlers: {
-    valueChange: (listItem: LongreadListElementItem, value: string) => void
-    upListItem: (listItem: LongreadListElementItem) => void
-    downListItem: (listItem: LongreadListElementItem) => void
-    deleteListItem: (listItem: LongreadListElementItem) => void
-    addNewListItem: (listItem: LongreadListElementItem) => void
-    addNewListItemAfter: (listItem: LongreadListElementItem) => void
-  }
+    valueChange: (listItem: LongreadListElementItem, value: string) => void;
+    upListItem: (listItem: LongreadListElementItem) => void;
+    downListItem: (listItem: LongreadListElementItem) => void;
+    deleteListItem: (listItem: LongreadListElementItem) => void;
+    addNewListItem: (listItem: LongreadListElementItem) => void;
+    addNewListItemAfter: (listItem: LongreadListElementItem) => void;
+  };
 }
 
 const LongreadListItem: React.FC<LongreadListItemProps> = ({
@@ -49,7 +54,10 @@ const LongreadListItem: React.FC<LongreadListItemProps> = ({
   onFocus,
   handlers,
 }) => {
-  const listItems = useMemo(() => list?.filter(({ parentId }) => parentId === item.id), [list, item])
+  const listItems = useMemo(
+    () => list?.filter(({ parentId }) => parentId === item.id),
+    [list, item],
+  );
 
   return (
     <>
@@ -64,7 +72,11 @@ const LongreadListItem: React.FC<LongreadListItemProps> = ({
           <div className={css.point} />
         )}
         <ContentEditable
-          className={cx(css.content, editable && css.editable, ordered && css.ordered)}
+          className={cx(
+            css.content,
+            editable && css.editable,
+            ordered && css.ordered,
+          )}
           contentClassName={cx(css.item, styles.common)}
           editable={editable}
           value={item.value}
@@ -79,35 +91,35 @@ const LongreadListItem: React.FC<LongreadListItemProps> = ({
             {level === 1 && (
               <Button
                 className={css.button}
-                size='small'
+                size="small"
                 icon={<UnorderedListOutlined />}
                 onClick={() => handlers.addNewListItem(item)}
-                title='Добавить подпункт'
+                title="Добавить подпункт"
               />
             )}
             <Button
               className={css.button}
-              size='small'
+              size="small"
               icon={<ArrowDownOutlined />}
               onClick={() => handlers.downListItem(item)}
               disabled={isLastItem}
-              title='Переместить ниже'
+              title="Переместить ниже"
             />
             <Button
               className={css.button}
-              size='small'
+              size="small"
               icon={<ArrowUpOutlined />}
               onClick={() => handlers.upListItem(item)}
               disabled={isFirsItem}
-              title='Переместить выше'
+              title="Переместить выше"
             />
             <Button
               className={css.button}
-              size='small'
+              size="small"
               icon={<DeleteOutlined />}
               onClick={() => handlers.deleteListItem(item)}
               disabled={disabledDelete}
-              title='Удалить пункт'
+              title="Удалить пункт"
             />
           </div>
         )}
@@ -115,7 +127,7 @@ const LongreadListItem: React.FC<LongreadListItemProps> = ({
       {listItems.length > 0 && (
         <div className={css.list}>
           {listItems
-            .filter((item) => editable || item.value)
+            .filter(item => editable || item.value)
             .map((item, index, items) => (
               <LongreadListItem
                 key={item.id}
@@ -135,7 +147,7 @@ const LongreadListItem: React.FC<LongreadListItemProps> = ({
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default LongreadListItem
+export default LongreadListItem;

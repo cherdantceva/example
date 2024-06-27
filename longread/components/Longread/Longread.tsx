@@ -1,20 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
-import cx from 'classnames'
-import { EyeOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Input, message } from 'antd'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import isMobile from 'ismobilejs'
-import { throwError } from 'store/error/actions'
-import useBeforeUnload from 'shared/hooks/useBeforeUnload'
-import type { LongreadStore } from 'features/longread'
-import Breadcrumbs from 'components/shared/Breadcrumbs'
-import Loading from 'components/shared/Loading'
-import { CallApiError } from 'helpers/callApi'
-import { BACKEND_ADMIN_PREFIX, ROUTE_PREFIX } from 'helpers/settings'
-import type RootState from 'domains/Store'
-import * as api from '../../api'
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { EyeOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Input, message } from 'antd';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import cx from 'classnames';
+import Breadcrumbs from 'components/shared/Breadcrumbs';
+import Loading from 'components/shared/Loading';
+import type RootState from 'domains/Store';
+import type { LongreadStore } from 'features/longread';
+import { CallApiError } from 'helpers/callApi';
+import { BACKEND_ADMIN_PREFIX, ROUTE_PREFIX } from 'helpers/settings';
+import isMobile from 'ismobilejs';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import useBeforeUnload from 'shared/hooks/useBeforeUnload';
+import { throwError } from 'store/error/actions';
+import type { Notification } from './components/NotificationDialog';
+import NotificationDialog from './components/NotificationDialog';
+import css from './styles.module.sass';
+import {
+  createErrorNotificationFromCallApiError,
+  isNewLongread,
+} from './utils';
+import * as api from '../../api';
 import {
   approximateProgressTimeChange,
   internalDescriptionChange,
@@ -24,103 +31,110 @@ import {
   titleChange,
   undoChangeLongreadForm,
   validateLongreadForm,
-} from '../../ducks'
-import type { LongreadResponse } from '../../types'
-import LongreadEditor from '../LongreadEditor'
-import type { Notification } from './components/NotificationDialog'
-import NotificationDialog from './components/NotificationDialog'
-import css from './styles.module.sass'
-import { createErrorNotificationFromCallApiError, isNewLongread } from './utils'
+} from '../../ducks';
+import type { LongreadResponse } from '../../types';
+import LongreadEditor from '../LongreadEditor';
 
 const Longread: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
 
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const lessonId = searchParams.get('lesson_id')
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const lessonId = searchParams.get('lesson_id');
 
-  const history = useHistory()
-  const dispatch = useDispatch()
+  const history = useHistory();
+  const dispatch = useDispatch();
 
-  const { longreadForm, longreadFormErrors, loadedLongreadForm } = useSelector<RootState, LongreadStore>(
-    (state) => state.longread
-  )
+  const { longreadForm, longreadFormErrors, loadedLongreadForm } = useSelector<
+    RootState,
+    LongreadStore
+  >(state => state.longread);
 
-  const [loadingData, setLoadingData] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [notification, setNotification] = useState<Notification | null>(null)
-  const [editable, setEditable] = useState(true)
-  const [savedIsGoogleLinkUpdated, setSavedIsGoogleLinkUpdated] = useState(false)
+  const [loadingData, setLoadingData] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [notification, setNotification] = useState<Notification | null>(null);
+  const [editable, setEditable] = useState(true);
+  const [savedIsGoogleLinkUpdated, setSavedIsGoogleLinkUpdated] =
+    useState(false);
 
-  const mobile = isMobile(window.navigator).any
+  const mobile = isMobile(window.navigator).any;
 
-  const [messageApi, contextHolder] = message.useMessage()
+  const [messageApi, contextHolder] = message.useMessage();
 
   const breadcrumbsItems = useMemo(
     () => [
       { title: 'Контент занятий', link: '' },
       { title: 'Лонгрид', link: '/backend/admin/lesson_resources/longreads' },
-      { title: isNewLongread(id) ? 'Новый контент типа лонгрид' : longreadForm.title, link: '' },
+      {
+        title: isNewLongread(id)
+          ? 'Новый контент типа лонгрид'
+          : longreadForm.title,
+        link: '',
+      },
     ],
-    [id, longreadForm.title]
-  )
+    [id, longreadForm.title],
+  );
 
   const isChangedLongreadForm = useMemo(
     () => JSON.stringify(longreadForm) !== JSON.stringify(loadedLongreadForm),
-    [longreadForm, loadedLongreadForm]
-  )
+    [longreadForm, loadedLongreadForm],
+  );
 
-  useBeforeUnload(!saved && isChangedLongreadForm)
+  useBeforeUnload(!saved && isChangedLongreadForm);
 
   const formHandlers = useMemo(
     () => ({
       handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        dispatch(titleChange(e.target.value))
+        dispatch(titleChange(e.target.value));
       },
-      handleInternalDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        dispatch(internalDescriptionChange(e.target.value))
+      handleInternalDescriptionChange(
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+      ) {
+        dispatch(internalDescriptionChange(e.target.value));
       },
-      handleApproximateProgressTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
-        dispatch(approximateProgressTimeChange(parseInt(e.target.value, 10)))
+      handleApproximateProgressTimeChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+      ) {
+        dispatch(approximateProgressTimeChange(parseInt(e.target.value, 10)));
       },
       handleReusableContentChange(e: CheckboxChangeEvent) {
-        dispatch(reusableContentChange(e.target.checked))
+        dispatch(reusableContentChange(e.target.checked));
       },
       handleIsGoogleLinkUpdatedChange(e: CheckboxChangeEvent) {
-        dispatch(isGoogleLinkUpdatedChange(e.target.checked))
+        dispatch(isGoogleLinkUpdatedChange(e.target.checked));
       },
     }),
-    [dispatch]
-  )
+    [dispatch],
+  );
 
   const handleCancelClick = useCallback(() => {
-    dispatch(undoChangeLongreadForm())
-  }, [dispatch])
+    dispatch(undoChangeLongreadForm());
+  }, [dispatch]);
 
   const handleSubmitClick = useCallback(async () => {
     if (longreadFormErrors.isError) {
-      dispatch(validateLongreadForm())
+      dispatch(validateLongreadForm());
     } else {
-      setSaving(true)
+      setSaving(true);
       try {
-        let response: LongreadResponse
+        let response: LongreadResponse;
         if (isNewLongread(id)) {
-          response = await api.createLongread(lessonId, longreadForm)
+          response = await api.createLongread(lessonId, longreadForm);
         } else {
-          response = await api.updateLongread(id, longreadForm)
+          response = await api.updateLongread(id, longreadForm);
         }
         if (response?.errors) {
           // Ошибка
-          dispatch(throwError(response?.errors))
-          return
+          dispatch(throwError(response?.errors));
+          return;
         }
 
-        setSavedIsGoogleLinkUpdated(longreadForm.isGoogleLinkUpdated)
+        setSavedIsGoogleLinkUpdated(longreadForm.isGoogleLinkUpdated);
 
         if (isNewLongread(id)) {
           // Создали новый лонгрид
-          setSaved(true)
+          setSaved(true);
           setNotification({
             status: 'success',
             title: `Лонгрид "${longreadForm.title}" успешно создан`,
@@ -128,62 +142,75 @@ const Longread: React.FC = () => {
             button: {
               title: 'Продолжить',
               onClick: () => {
-                setNotification(null)
+                setNotification(null);
                 if (lessonId) {
-                  window.location.href = `${BACKEND_ADMIN_PREFIX}/lessons/${lessonId}/lesson_items`
+                  window.location.href = `${BACKEND_ADMIN_PREFIX}/lessons/${lessonId}/lesson_items`;
                 } else {
-                  history.push(`${ROUTE_PREFIX}/longreads/${response.longread.id}`)
+                  history.push(
+                    `${ROUTE_PREFIX}/longreads/${response.longread.id}`,
+                  );
                 }
               },
             },
-          })
+          });
         } else {
           // Обновили существующий лонгрид
-          dispatch(storeLongreadForm(longreadForm))
+          dispatch(storeLongreadForm(longreadForm));
           messageApi.open({
             type: 'success',
             content: `Лонгрид "${longreadForm.title}" успешно обновлён`,
-          })
+          });
         }
       } catch (error) {
         if (error instanceof CallApiError && error.status === 422) {
-          const currentNotification = createErrorNotificationFromCallApiError(error, id)
-          setNotification(currentNotification)
+          const currentNotification = createErrorNotificationFromCallApiError(
+            error,
+            id,
+          );
+          setNotification(currentNotification);
         } else {
-          dispatch(throwError(error))
+          dispatch(throwError(error));
         }
       }
-      setSaving(false)
+      setSaving(false);
     }
-  }, [id, lessonId, longreadForm, dispatch, history, longreadFormErrors, messageApi])
+  }, [
+    id,
+    lessonId,
+    longreadForm,
+    dispatch,
+    history,
+    longreadFormErrors,
+    messageApi,
+  ]);
 
   const closeNotificationDialog = useCallback(() => {
-    setNotification(null)
-  }, [])
+    setNotification(null);
+  }, []);
 
   const handlePreviewClick = useCallback(() => {
-    setEditable((value) => !value)
-  }, [])
+    setEditable(value => !value);
+  }, []);
 
   useEffect(() => {
     const fetchLongreadItem = async () => {
-      setLoadingData(true)
+      setLoadingData(true);
       try {
-        const longreadFormValues = await api.fetchLongread(id)
-        dispatch(storeLongreadForm(longreadFormValues))
-        setSavedIsGoogleLinkUpdated(longreadFormValues.isGoogleLinkUpdated)
+        const longreadFormValues = await api.fetchLongread(id);
+        dispatch(storeLongreadForm(longreadFormValues));
+        setSavedIsGoogleLinkUpdated(longreadFormValues.isGoogleLinkUpdated);
       } catch (e) {
-        dispatch(throwError(e))
+        dispatch(throwError(e));
       }
-      setLoadingData(false)
-    }
+      setLoadingData(false);
+    };
     if (!isNewLongread(id) && !loadedLongreadForm) {
-      fetchLongreadItem()
+      fetchLongreadItem();
     }
-  }, [id, loadedLongreadForm, dispatch])
+  }, [id, loadedLongreadForm, dispatch]);
 
   if (loadingData) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -196,7 +223,10 @@ const Longread: React.FC = () => {
         onCancel={closeNotificationDialog}
       />
       <div className={css.form}>
-        <div className={css.title} data-testid='lms-lesson-resources-longread-header'>
+        <div
+          className={css.title}
+          data-testid="lms-lesson-resources-longread-header"
+        >
           {isNewLongread(id) ? 'Новый лонгрид' : 'Редактирование лонгрида'}
         </div>
 
@@ -208,12 +238,14 @@ const Longread: React.FC = () => {
             onChange={formHandlers.handleTitleChange}
             disabled={saving}
             maxLength={250}
-            data-testid='lms-lesson-resources-longread-title'
+            data-testid="lms-lesson-resources-longread-title"
           />
         </div>
 
         <div className={css.field}>
-          <div className={css.label}>Внутреннее описание (студент его не увидит)</div>
+          <div className={css.label}>
+            Внутреннее описание (студент его не увидит)
+          </div>
           <div className={css.optionalText}>Необязательное поле</div>
           <Input.TextArea
             value={longreadForm.internalDescription}
@@ -221,24 +253,29 @@ const Longread: React.FC = () => {
             onChange={formHandlers.handleInternalDescriptionChange}
             disabled={saving}
             maxLength={255}
-            data-testid='lms-lesson-resources-longread-internal-description'
+            data-testid="lms-lesson-resources-longread-internal-description"
           />
         </div>
 
         <div className={cx(css.field, css.timeField)}>
           <div className={css.label}>Примерное время прохождения (мин.)</div>
           <Input
-            className={cx(longreadFormErrors.approximateProgressTime && css.inputError)}
+            className={cx(
+              longreadFormErrors.approximateProgressTime && css.inputError,
+            )}
             value={longreadForm.approximateProgressTime || ''}
             onChange={formHandlers.handleApproximateProgressTimeChange}
             disabled={saving}
             maxLength={4}
-            data-testid='lms-lesson-resources-longread-approximate-progress-time'
+            data-testid="lms-lesson-resources-longread-approximate-progress-time"
           />
         </div>
 
         <div className={css.field}>
-          <Checkbox onChange={formHandlers.handleReusableContentChange} checked={longreadForm.reusableContentEnabled}>
+          <Checkbox
+            onChange={formHandlers.handleReusableContentChange}
+            checked={longreadForm.reusableContentEnabled}
+          >
             Универсальный контент
           </Checkbox>
         </div>
@@ -255,17 +292,20 @@ const Longread: React.FC = () => {
 
         <div className={cx(css.field, css.longreadField)}>
           <div className={css.label}>Конструктор лонгрида</div>
-          <LongreadEditor longreadElements={longreadForm.longreadElements} editable={editable} />
+          <LongreadEditor
+            longreadElements={longreadForm.longreadElements}
+            editable={editable}
+          />
         </div>
 
         <div className={css.footer}>
           <div className={css.buttons}>
             <Button
-              type='primary'
+              type="primary"
               className={css.btn}
               onClick={handleSubmitClick}
               loading={saving}
-              data-testid='lms-lesson-resources-longread-submit'
+              data-testid="lms-lesson-resources-longread-submit"
             >
               Сохранить
             </Button>
@@ -274,16 +314,16 @@ const Longread: React.FC = () => {
               type={editable ? 'default' : 'primary'}
               icon={<EyeOutlined />}
               onClick={handlePreviewClick}
-              data-testid='lms-lesson-resources-longread-preview'
+              data-testid="lms-lesson-resources-longread-preview"
             >
               {mobile ? 'Превью' : 'Превью лонгрида'}
             </Button>
             <Button
-              type='default'
+              type="default"
               className={css.btn}
               onClick={handleCancelClick}
               disabled={saving}
-              data-testid='lms-lesson-resources-longread-cancel'
+              data-testid="lms-lesson-resources-longread-cancel"
             >
               {mobile ? 'Отменить' : 'Отменить изменения'}
             </Button>
@@ -291,7 +331,7 @@ const Longread: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Longread
+export default Longread;

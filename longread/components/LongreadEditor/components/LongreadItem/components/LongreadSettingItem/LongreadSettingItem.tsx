@@ -1,75 +1,84 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Drawer, Input, Radio, Space } from 'antd'
-import type { RadioChangeEvent } from 'antd'
-import type { LongreadElement } from 'features/longread/lib/types'
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Drawer, Input, Radio, Space } from 'antd';
+import type { RadioChangeEvent } from 'antd';
+import type { LongreadElement } from 'features/longread/lib/types';
 import {
   isCodeLongreadElement,
   isImageLongreadElement,
   isListLongreadElement,
   isPanelLongreadElement,
-} from 'features/longread/lib/utils'
-import css from './styles.module.sass'
+} from 'features/longread/lib/utils';
+import css from './styles.module.sass';
 
 interface Settings {
-  indent: number
-  anchor: string
-  [key: string]: unknown
+  indent: number;
+  anchor: string;
+  [key: string]: unknown;
 }
 
 interface LongreadSettingItemProps {
-  open: boolean
-  item: LongreadElement
-  onSettingSave: (settings?: Settings) => void
-  onCloseDrawer: () => void
+  open: boolean;
+  item: LongreadElement;
+  onSettingSave: (settings?: Settings) => void;
+  onCloseDrawer: () => void;
 }
 
-const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, onCloseDrawer, onSettingSave }) => {
-  const [indent, setIndent] = useState(item.settings.indent)
-  const [anchor, setAnchor] = useState(item.settings.anchor)
+const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({
+  open,
+  item,
+  onCloseDrawer,
+  onSettingSave,
+}) => {
+  const [indent, setIndent] = useState(item.settings.indent);
+  const [anchor, setAnchor] = useState(item.settings.anchor);
 
-  const [listOrdered, setListOrdered] = useState(!!item.settings.ordered)
+  const [listOrdered, setListOrdered] = useState(!!item.settings.ordered);
 
-  const [imageWidth, setImageWidth] = useState(item.settings.width)
-  const [imageCount, setImageCount] = useState(() => (isImageLongreadElement(item) ? item.images.length : 0))
-  const [imageBorder, setImageBorder] = useState(!!item.settings.border)
+  const [imageWidth, setImageWidth] = useState(item.settings.width);
+  const [imageCount, setImageCount] = useState(() =>
+    isImageLongreadElement(item) ? item.images.length : 0,
+  );
+  const [imageBorder, setImageBorder] = useState(!!item.settings.border);
 
-  const [panelIcon, setPanelIcon] = useState(item.settings.icon)
-  const [panelBackground, setPanelBackground] = useState(item.settings.background)
+  const [panelIcon, setPanelIcon] = useState(item.settings.icon);
+  const [panelBackground, setPanelBackground] = useState(
+    item.settings.background,
+  );
 
-  const [codeName, setCodeName] = useState(item.settings.name)
+  const [codeName, setCodeName] = useState(item.settings.name);
 
   const handles = useMemo(
     () => ({
       offsetChange(e: RadioChangeEvent) {
-        setIndent(e.target.value)
+        setIndent(e.target.value);
       },
       anchorChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setAnchor(e.target.value)
+        setAnchor(e.target.value);
       },
       listOrderedChange(e: RadioChangeEvent) {
-        setListOrdered(e.target.value)
+        setListOrdered(e.target.value);
       },
       imageCountChange(e: RadioChangeEvent) {
-        setImageCount(e.target.value)
+        setImageCount(e.target.value);
       },
       imageWidthChange(e: RadioChangeEvent) {
-        setImageWidth(e.target.value)
+        setImageWidth(e.target.value);
       },
       imageBorderChange(e: RadioChangeEvent) {
-        setImageBorder(e.target.value)
+        setImageBorder(e.target.value);
       },
       panelIconChange(e: RadioChangeEvent) {
-        setPanelIcon(e.target.value)
+        setPanelIcon(e.target.value);
       },
       panelBackgroundChange(e: RadioChangeEvent) {
-        setPanelBackground(e.target.value)
+        setPanelBackground(e.target.value);
       },
       codeNameChange(e: RadioChangeEvent) {
-        setCodeName(e.target.value)
+        setCodeName(e.target.value);
       },
     }),
-    []
-  )
+    [],
+  );
 
   const handleSettingSave = useCallback(() => {
     onSettingSave({
@@ -82,7 +91,7 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
       panelIcon,
       panelBackground,
       codeName,
-    })
+    });
   }, [
     indent,
     anchor,
@@ -94,21 +103,21 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
     panelBackground,
     codeName,
     onSettingSave,
-  ])
+  ]);
 
   useEffect(() => {
     if (!open) {
-      setIndent(item.settings.indent)
-      setAnchor(item.settings.anchor)
-      setListOrdered(!!item.settings.ordered)
+      setIndent(item.settings.indent);
+      setAnchor(item.settings.anchor);
+      setListOrdered(!!item.settings.ordered);
     }
-  }, [open, item])
+  }, [open, item]);
 
   return (
     <div className={css.root}>
       <Drawer
-        title='Настройки блока'
-        placement='right'
+        title="Настройки блока"
+        placement="right"
         width={680}
         closable={false}
         onClose={onCloseDrawer}
@@ -116,7 +125,11 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
         maskClosable
         footer={
           <>
-            <Button className={css.button} type='primary' onClick={handleSettingSave}>
+            <Button
+              className={css.button}
+              type="primary"
+              onClick={handleSettingSave}
+            >
               Сохранить
             </Button>
             <Button className={css.button} onClick={onCloseDrawer}>
@@ -152,7 +165,10 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
         {isListLongreadElement(item) && (
           <div className={css.field}>
             <div className={css.label}>Тип списка</div>
-            <Radio.Group onChange={handles.listOrderedChange} value={listOrdered}>
+            <Radio.Group
+              onChange={handles.listOrderedChange}
+              value={listOrdered}
+            >
               {[
                 {
                   label: 'Маркированный',
@@ -174,8 +190,11 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
           <>
             <div className={css.field}>
               <div className={css.label}>Изображений в ряду</div>
-              <Radio.Group onChange={handles.imageCountChange} value={imageCount}>
-                {[1, 2, 3].map((value) => (
+              <Radio.Group
+                onChange={handles.imageCountChange}
+                value={imageCount}
+              >
+                {[1, 2, 3].map(value => (
                   <Radio key={value} value={value}>
                     {value}
                   </Radio>
@@ -184,8 +203,11 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
             </div>
             <div className={css.field}>
               <div className={css.label}>Ширина блока от ширины контента</div>
-              <Radio.Group onChange={handles.imageWidthChange} value={imageWidth}>
-                {[100, 70, 50, 30].map((value) => (
+              <Radio.Group
+                onChange={handles.imageWidthChange}
+                value={imageWidth}
+              >
+                {[100, 70, 50, 30].map(value => (
                   <Radio key={value} value={value}>
                     {value}%
                   </Radio>
@@ -194,7 +216,10 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
             </div>
             <div className={css.field}>
               <div className={css.label}>Рамка для изображения</div>
-              <Radio.Group onChange={handles.imageBorderChange} value={imageBorder}>
+              <Radio.Group
+                onChange={handles.imageBorderChange}
+                value={imageBorder}
+              >
                 {[
                   {
                     label: 'Нет',
@@ -217,8 +242,11 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
           <>
             <div className={css.field}>
               <div className={css.label}>Оформление</div>
-              <Radio.Group onChange={handles.panelBackgroundChange} value={panelBackground}>
-                <Space direction='vertical'>
+              <Radio.Group
+                onChange={handles.panelBackgroundChange}
+                value={panelBackground}
+              >
+                <Space direction="vertical">
                   {[
                     {
                       label: 'Серый фон',
@@ -290,11 +318,16 @@ const LongreadSettingItem: React.FC<LongreadSettingItemProps> = ({ open, item, o
         )}
         <div className={css.field}>
           <div className={css.label}>Якорь</div>
-          <Input style={{ width: '320px' }} value={anchor} onChange={handles.anchorChange} maxLength={64} />
+          <Input
+            style={{ width: '320px' }}
+            value={anchor}
+            onChange={handles.anchorChange}
+            maxLength={64}
+          />
         </div>
       </Drawer>
     </div>
-  )
-}
+  );
+};
 
-export default LongreadSettingItem
+export default LongreadSettingItem;

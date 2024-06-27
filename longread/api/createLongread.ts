@@ -1,7 +1,7 @@
-import buildUrl from 'shared/utils/buildUrl'
-import callApi from 'helpers/callApi'
-import type { LongreadFormValues, LongreadResponse } from '../types'
-import { getLongreadImages } from '../utils'
+import callApi from 'helpers/callApi';
+import buildUrl from 'shared/utils/buildUrl';
+import type { LongreadFormValues, LongreadResponse } from '../types';
+import { getLongreadImages } from '../utils';
 
 /**
  * Создание новой сущности лонгрида
@@ -16,9 +16,9 @@ const createLongread = (
     reusableContentEnabled,
     isGoogleLinkUpdated,
     longreadElements,
-  }: LongreadFormValues
+  }: LongreadFormValues,
 ) => {
-  const url = buildUrl('/backend/admin/api/lesson_resources/longreads')
+  const url = buildUrl('/backend/admin/api/lesson_resources/longreads');
   return callApi<LongreadResponse>(url, {
     method: 'POST',
     data: {
@@ -36,7 +36,7 @@ const createLongread = (
       },
       lesson_id: lessonId,
     },
-  })
-}
+  });
+};
 
-export default createLongread
+export default createLongread;

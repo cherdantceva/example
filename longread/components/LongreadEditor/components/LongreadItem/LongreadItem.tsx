@@ -1,8 +1,12 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import cx from 'classnames'
-import { ArrowDownOutlined, ArrowUpOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
+import { Button } from 'antd';
+import cx from 'classnames';
 import {
   changeLongreadElement,
   copyLongreadElement,
@@ -10,8 +14,11 @@ import {
   downLongreadElement,
   dragAndDropLongreadElement,
   upLongreadElement,
-} from 'features/longread/ducks'
-import { LongreadElement, LongreadElementType } from 'features/longread/lib/types'
+} from 'features/longread/ducks';
+import {
+  LongreadElement,
+  LongreadElementType,
+} from 'features/longread/lib/types';
 import {
   isCodeLongreadElement,
   isImageLongreadElement,
@@ -19,29 +26,30 @@ import {
   isPanelLongreadElement,
   isTextLongreadElement,
   isVideoLongreadElement,
-} from 'features/longread/lib/utils'
-import LongreadCode from '../LongreadCode'
-import LongreadImage from '../LongreadImage'
-import LongreadList from '../LongreadList'
-import LongreadMenu from '../LongreadMenu'
-import LongreadPanel from '../LongreadPanel'
-import LongreadText from '../LongreadText'
-import LongreadVideo from '../LongreadVideo'
-import LongreadSettingItem from './components/LongreadSettingItem'
-import useDragAndDrop from './hooks/useDragAndDrop'
-import css from './styles.module.sass'
+} from 'features/longread/lib/utils';
+import { useDispatch } from 'react-redux';
+import LongreadSettingItem from './components/LongreadSettingItem';
+import useDragAndDrop from './hooks/useDragAndDrop';
+import css from './styles.module.sass';
+import LongreadCode from '../LongreadCode';
+import LongreadImage from '../LongreadImage';
+import LongreadList from '../LongreadList';
+import LongreadMenu from '../LongreadMenu';
+import LongreadPanel from '../LongreadPanel';
+import LongreadText from '../LongreadText';
+import LongreadVideo from '../LongreadVideo';
 
 interface LongreadItemProps {
-  item: LongreadElement
-  editable: boolean
-  isFirsItem: boolean
-  isLastItem: boolean
+  item: LongreadElement;
+  editable: boolean;
+  isFirsItem: boolean;
+  isLastItem: boolean;
   menuItems: {
-    type: LongreadElementType | null
-    text: string
-    icon?: React.ReactNode
-  }[]
-  onClickMenuItem: (item: LongreadElement, menuItem: unknown) => void
+    type: LongreadElementType | null;
+    text: string;
+    icon?: React.ReactNode;
+  }[];
+  onClickMenuItem: (item: LongreadElement, menuItem: unknown) => void;
 }
 
 const LongreadItem: React.FC<LongreadItemProps> = ({
@@ -52,73 +60,73 @@ const LongreadItem: React.FC<LongreadItemProps> = ({
   menuItems,
   onClickMenuItem,
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const [dndEnable, setDndEnable] = useState(true)
-  const [settingDrawerOpen, setSettingDrawerOpen] = useState(false)
+  const [dndEnable, setDndEnable] = useState(true);
+  const [settingDrawerOpen, setSettingDrawerOpen] = useState(false);
 
   const handleDragAndDrop = useCallback(
     (dropElement: LongreadElement, dragElement: LongreadElement) => {
-      dispatch(dragAndDropLongreadElement({ dropElement, dragElement }))
+      dispatch(dragAndDropLongreadElement({ dropElement, dragElement }));
     },
-    [dispatch]
-  )
+    [dispatch],
+  );
 
   const { ref } = useDragAndDrop<LongreadElement>({
     item,
     type: 'longread-item',
     enable: editable && dndEnable,
     onDropItem: handleDragAndDrop,
-  })
+  });
 
   const elementHandlers = useMemo(
     () => ({
       handleItemBlur: () => {
-        setDndEnable(true)
+        setDndEnable(true);
       },
       handleItemFocus: () => {
-        setDndEnable(false)
+        setDndEnable(false);
       },
       handleItemDelete: () => {
-        dispatch(deleteLongreadElement(item))
+        dispatch(deleteLongreadElement(item));
       },
       handleItemCopy: () => {
-        dispatch(copyLongreadElement(item))
+        dispatch(copyLongreadElement(item));
       },
       handleItemChange: (longreadElement: LongreadElement) => {
-        dispatch(changeLongreadElement(longreadElement))
+        dispatch(changeLongreadElement(longreadElement));
       },
       handleItemUp: () => {
-        dispatch(upLongreadElement(item))
+        dispatch(upLongreadElement(item));
       },
       handleItemDown: () => {
-        dispatch(downLongreadElement(item))
+        dispatch(downLongreadElement(item));
       },
     }),
-    [item, dispatch]
-  )
+    [item, dispatch],
+  );
 
   const inlineStyle: React.CSSProperties = useMemo(
     () => ({
       marginBottom: isLastItem ? undefined : `${item.settings.indent}px`,
     }),
-    [item.settings, isLastItem]
-  )
+    [item.settings, isLastItem],
+  );
 
   const handlerMenuItemClick = useCallback(
     (menuItem: unknown) => {
-      onClickMenuItem(item, menuItem)
+      onClickMenuItem(item, menuItem);
     },
-    [item, onClickMenuItem]
-  )
+    [item, onClickMenuItem],
+  );
 
   const handleItemSetting = useCallback(() => {
-    setSettingDrawerOpen(true)
-  }, [])
+    setSettingDrawerOpen(true);
+  }, []);
 
   const handleDrawerClose = useCallback(() => {
-    setSettingDrawerOpen(false)
-  }, [])
+    setSettingDrawerOpen(false);
+  }, []);
 
   const handleSettingSave = useCallback(
     ({ indent, anchor, ...settings }) => {
@@ -129,26 +137,26 @@ const LongreadItem: React.FC<LongreadItemProps> = ({
           indent,
           anchor,
         },
-      }
+      };
       if (isListLongreadElement(newItem)) {
-        newItem.settings.ordered = settings.listOrdered
+        newItem.settings.ordered = settings.listOrdered;
       } else if (isImageLongreadElement(newItem)) {
-        newItem.settings.width = settings.imageWidth
-        newItem.settings.border = settings.imageBorder
+        newItem.settings.width = settings.imageWidth;
+        newItem.settings.border = settings.imageBorder;
         newItem.images = Array(settings.imageCount)
           .fill({ url: '' })
-          .map((value, index) => newItem.images[index] || value)
+          .map((value, index) => newItem.images[index] || value);
       } else if (isPanelLongreadElement(newItem)) {
-        newItem.settings.icon = settings.panelIcon
-        newItem.settings.background = settings.panelBackground
+        newItem.settings.icon = settings.panelIcon;
+        newItem.settings.background = settings.panelBackground;
       } else if (isCodeLongreadElement(newItem)) {
-        newItem.settings.name = settings.codeName
+        newItem.settings.name = settings.codeName;
       }
-      dispatch(changeLongreadElement(newItem))
-      setSettingDrawerOpen(false)
+      dispatch(changeLongreadElement(newItem));
+      setSettingDrawerOpen(false);
     },
-    [dispatch, item]
-  )
+    [dispatch, item],
+  );
 
   return (
     <div
@@ -160,38 +168,42 @@ const LongreadItem: React.FC<LongreadItemProps> = ({
       {editable && (
         <div className={css.toolbar}>
           <div className={css.label}>{item.label}</div>
-          <Button className={css.button} size='small' onClick={handleItemSetting}>
+          <Button
+            className={css.button}
+            size="small"
+            onClick={handleItemSetting}
+          >
             Настройки
           </Button>
           <Button
             className={css.button}
-            size='small'
+            size="small"
             icon={<ArrowDownOutlined />}
             onClick={elementHandlers.handleItemDown}
             disabled={isLastItem}
-            title='Переместить ниже'
+            title="Переместить ниже"
           />
           <Button
             className={css.button}
-            size='small'
+            size="small"
             icon={<ArrowUpOutlined />}
             onClick={elementHandlers.handleItemUp}
             disabled={isFirsItem}
-            title='Переместить выше'
+            title="Переместить выше"
           />
           <Button
             className={css.button}
-            size='small'
+            size="small"
             icon={<CopyOutlined />}
             onClick={elementHandlers.handleItemCopy}
-            title='Дублировать блок'
+            title="Дублировать блок"
           />
           <Button
             className={css.button}
-            size='small'
+            size="small"
             icon={<DeleteOutlined />}
             onClick={elementHandlers.handleItemDelete}
-            title='Удалить блок'
+            title="Удалить блок"
           />
         </div>
       )}
@@ -251,7 +263,11 @@ const LongreadItem: React.FC<LongreadItemProps> = ({
       )}
       {editable && (
         <>
-          <LongreadMenu className={css.menu} items={menuItems} onClickMenuItem={handlerMenuItemClick} />
+          <LongreadMenu
+            className={css.menu}
+            items={menuItems}
+            onClickMenuItem={handlerMenuItemClick}
+          />
           <LongreadSettingItem
             open={settingDrawerOpen}
             item={item}
@@ -261,7 +277,7 @@ const LongreadItem: React.FC<LongreadItemProps> = ({
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(LongreadItem)
+export default React.memo(LongreadItem);

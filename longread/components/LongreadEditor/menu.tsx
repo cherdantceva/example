@@ -1,12 +1,12 @@
-import React from 'react'
-import { PlusOutlined } from '@ant-design/icons'
-import { LongreadElementType } from 'features/longread/lib/types'
+import React from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { LongreadElementType } from 'features/longread/lib/types';
 
 export interface MenuItem<Options = Record<string, unknown>> {
-  type: LongreadElementType | null
-  text: string
-  icon?: React.ReactNode
-  options?: Options
+  type: LongreadElementType | null;
+  text: string;
+  icon?: React.ReactNode;
+  options?: Options;
 }
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -23,7 +23,7 @@ export const MENU_ITEMS: MenuItem[] = [
     text: 'Выбрать блок',
     icon: <PlusOutlined />,
   },
-]
+];
 
 export const BLOCK_MENU_ITEMS: MenuItem[] = [
   {
@@ -53,4 +53,4 @@ export const BLOCK_MENU_ITEMS: MenuItem[] = [
   //   text: 'Блок с кодом',
   //   type: LongreadElementType.code,
   // },
-]
+];

@@ -1,1 +1,1 @@
-export { default } from './LongreadPage'
+export { default } from './LongreadPage';

@@ -1,27 +1,35 @@
-import React, { useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import cx from 'classnames'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { addNewLongreadElement, addNewLongreadElementAfter } from 'features/longread/ducks'
-import { LongreadElement } from 'features/longread/lib/types'
-import { isEmptyLongreadElement } from 'features/longread/lib/utils'
-import LongreadBlockMenu from './components/LongreadBlockMenu'
-import LongreadItem from './components/LongreadItem'
-import LongreadMenu from './components/LongreadMenu'
-import { BLOCK_MENU_ITEMS, MENU_ITEMS, MenuItem } from './menu'
-import css from './styles.module.sass'
+import React, { useCallback, useState } from 'react';
+import cx from 'classnames';
+import {
+  addNewLongreadElement,
+  addNewLongreadElementAfter,
+} from 'features/longread/ducks';
+import { LongreadElement } from 'features/longread/lib/types';
+import { isEmptyLongreadElement } from 'features/longread/lib/utils';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDispatch } from 'react-redux';
+import LongreadBlockMenu from './components/LongreadBlockMenu';
+import LongreadItem from './components/LongreadItem';
+import LongreadMenu from './components/LongreadMenu';
+import { BLOCK_MENU_ITEMS, MENU_ITEMS, MenuItem } from './menu';
+import css from './styles.module.sass';
 
 interface LongreadEditorProps {
-  editable: boolean
-  longreadElements: LongreadElement[]
+  editable: boolean;
+  longreadElements: LongreadElement[];
 }
 
-const LongreadEditor: React.FC<LongreadEditorProps> = ({ editable, longreadElements }) => {
-  const dispatch = useDispatch()
+const LongreadEditor: React.FC<LongreadEditorProps> = ({
+  editable,
+  longreadElements,
+}) => {
+  const dispatch = useDispatch();
 
-  const [isOpenBlockMenu, setIsOpenBlockMenu] = useState(false)
-  const [activeElement, setActiveElement] = useState<LongreadElement | null>(null)
+  const [isOpenBlockMenu, setIsOpenBlockMenu] = useState(false);
+  const [activeElement, setActiveElement] = useState<LongreadElement | null>(
+    null,
+  );
 
   const handleBlockMenuClose = useCallback(
     (menuIem?: MenuItem) => {
@@ -31,14 +39,14 @@ const LongreadEditor: React.FC<LongreadEditorProps> = ({ editable, longreadEleme
             type: menuIem.type,
             options: menuIem.options,
             element: activeElement,
-          })
-        )
+          }),
+        );
       }
-      setActiveElement(null)
-      setIsOpenBlockMenu(false)
+      setActiveElement(null);
+      setIsOpenBlockMenu(false);
     },
-    [activeElement, dispatch]
-  )
+    [activeElement, dispatch],
+  );
 
   const handlerMenuClick = useCallback(
     ({ type, options }) => {
@@ -47,28 +55,28 @@ const LongreadEditor: React.FC<LongreadEditorProps> = ({ editable, longreadEleme
           addNewLongreadElement({
             type,
             options,
-          })
-        )
+          }),
+        );
       } else {
-        setActiveElement(null)
-        setIsOpenBlockMenu(true)
+        setActiveElement(null);
+        setIsOpenBlockMenu(true);
       }
     },
-    [dispatch]
-  )
+    [dispatch],
+  );
 
   const handleItemMenuClick = useCallback(
     (element: LongreadElement, menuItem: unknown) => {
-      const { type, options } = menuItem as MenuItem
+      const { type, options } = menuItem as MenuItem;
       if (type) {
-        dispatch(addNewLongreadElementAfter({ type, element, options }))
+        dispatch(addNewLongreadElementAfter({ type, element, options }));
       } else {
-        setActiveElement(element)
-        setIsOpenBlockMenu(true)
+        setActiveElement(element);
+        setIsOpenBlockMenu(true);
       }
     },
-    [dispatch]
-  )
+    [dispatch],
+  );
 
   return (
     <div className={css.root}>
@@ -76,7 +84,7 @@ const LongreadEditor: React.FC<LongreadEditorProps> = ({ editable, longreadEleme
         <DndProvider backend={HTML5Backend}>
           {longreadElements.length
             ? longreadElements
-                .filter((item) => editable || !isEmptyLongreadElement(item))
+                .filter(item => editable || !isEmptyLongreadElement(item))
                 .map((item, index, elements) => (
                   <LongreadItem
                     key={item.id}
@@ -88,12 +96,22 @@ const LongreadEditor: React.FC<LongreadEditorProps> = ({ editable, longreadEleme
                     onClickMenuItem={handleItemMenuClick}
                   />
                 ))
-            : editable && <LongreadMenu className={css.menu} items={MENU_ITEMS} onClickMenuItem={handlerMenuClick} />}
+            : editable && (
+                <LongreadMenu
+                  className={css.menu}
+                  items={MENU_ITEMS}
+                  onClickMenuItem={handlerMenuClick}
+                />
+              )}
         </DndProvider>
       </div>
-      <LongreadBlockMenu open={isOpenBlockMenu} items={BLOCK_MENU_ITEMS} onClose={handleBlockMenuClose} />
+      <LongreadBlockMenu
+        open={isOpenBlockMenu}
+        items={BLOCK_MENU_ITEMS}
+        onClose={handleBlockMenuClose}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(LongreadEditor)
+export default React.memo(LongreadEditor);

@@ -1,1 +1,1 @@
-export { default } from './LongreadList'
+export { default } from './LongreadList';

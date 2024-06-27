@@ -1,7 +1,7 @@
-import buildUrl from 'shared/utils/buildUrl'
-import callApi from 'helpers/callApi'
-import type { LongreadFormValues, LongreadResponse } from '../types'
-import { getLongreadImages } from '../utils'
+import callApi from 'helpers/callApi';
+import buildUrl from 'shared/utils/buildUrl';
+import type { LongreadFormValues, LongreadResponse } from '../types';
+import { getLongreadImages } from '../utils';
 
 /**
  * Обновление существующей сущности лонгрида по id
@@ -16,9 +16,9 @@ const updateLongread = (
     reusableContentEnabled,
     isGoogleLinkUpdated,
     longreadElements,
-  }: LongreadFormValues
+  }: LongreadFormValues,
 ) => {
-  const url = buildUrl(`/backend/admin/api/lesson_resources/longreads/${id}`)
+  const url = buildUrl(`/backend/admin/api/lesson_resources/longreads/${id}`);
   return callApi<LongreadResponse>(url, {
     method: 'PATCH',
     data: {
@@ -35,7 +35,7 @@ const updateLongread = (
         image_ids: getLongreadImages(longreadElements),
       },
     },
-  })
-}
+  });
+};
 
-export default updateLongread
+export default updateLongread;

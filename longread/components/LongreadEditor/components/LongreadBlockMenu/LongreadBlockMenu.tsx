@@ -1,31 +1,35 @@
-import React, { useCallback } from 'react'
-import { Button, Drawer } from 'antd'
-import type { MenuItem } from '../../menu'
-import css from './styles.module.sass'
+import React, { useCallback } from 'react';
+import { Button, Drawer } from 'antd';
+import css from './styles.module.sass';
+import type { MenuItem } from '../../menu';
 
 interface LongreadBlockMenuProps {
-  open: boolean
-  items: MenuItem[]
-  onClose: (menuItem?: MenuItem) => void
+  open: boolean;
+  items: MenuItem[];
+  onClose: (menuItem?: MenuItem) => void;
 }
 
-const LongreadBlockMenu: React.FC<LongreadBlockMenuProps> = ({ open, items, onClose }) => {
+const LongreadBlockMenu: React.FC<LongreadBlockMenuProps> = ({
+  open,
+  items,
+  onClose,
+}) => {
   const handleClose = useCallback(() => {
-    onClose()
-  }, [onClose])
+    onClose();
+  }, [onClose]);
 
   const handleButtonClick = useCallback(
-    (e) => {
-      const { index } = e.currentTarget.dataset
-      onClose(items[parseInt(index, 10)])
+    e => {
+      const { index } = e.currentTarget.dataset;
+      onClose(items[parseInt(index, 10)]);
     },
-    [items, onClose]
-  )
+    [items, onClose],
+  );
 
   return (
     <Drawer
-      title='Добавление блока'
-      placement='right'
+      title="Добавление блока"
+      placement="right"
       width={680}
       closable={false}
       onClose={handleClose}
@@ -34,13 +38,18 @@ const LongreadBlockMenu: React.FC<LongreadBlockMenuProps> = ({ open, items, onCl
     >
       <div className={css.root}>
         {items.map(({ text }, index) => (
-          <Button key={text} size='small' data-index={index} onClick={handleButtonClick}>
+          <Button
+            key={text}
+            size="small"
+            data-index={index}
+            onClick={handleButtonClick}
+          >
             {text}
           </Button>
         ))}
       </div>
     </Drawer>
-  )
-}
+  );
+};
 
-export default LongreadBlockMenu
+export default LongreadBlockMenu;

@@ -1,12 +1,14 @@
-import buildUrl from 'shared/utils/buildUrl'
-import callApi from 'helpers/callApi'
-import type { LongreadFormValues, LongreadResponse } from '../types'
+import callApi from 'helpers/callApi';
+import buildUrl from 'shared/utils/buildUrl';
+import type { LongreadFormValues, LongreadResponse } from '../types';
 
 /**
  * Чтение существующего лонгрида по id
  */
-const fetchLongread = async (id: number | string): Promise<LongreadFormValues> => {
-  const url = buildUrl(`/backend/admin/api/lesson_resources/longreads/${id}`)
+const fetchLongread = async (
+  id: number | string,
+): Promise<LongreadFormValues> => {
+  const url = buildUrl(`/backend/admin/api/lesson_resources/longreads/${id}`);
 
   const {
     longread: {
@@ -17,7 +19,7 @@ const fetchLongread = async (id: number | string): Promise<LongreadFormValues> =
       is_google_link_updated: isGoogleLinkUpdated,
       content,
     },
-  } = await callApi<LongreadResponse>(url)
+  } = await callApi<LongreadResponse>(url);
 
   return {
     title,
@@ -27,7 +29,7 @@ const fetchLongread = async (id: number | string): Promise<LongreadFormValues> =
     reusableContentEnabled,
     isGoogleLinkUpdated,
     longreadElements: content.elements,
-  }
-}
+  };
+};
 
-export default fetchLongread
+export default fetchLongread;

@@ -1,33 +1,39 @@
-import React, { useMemo } from 'react'
-import cx from 'classnames'
-import { Input } from 'antd'
-import styles from 'features/longread/lib/styles.module.sass'
-import type { LongreadPanelElement } from 'features/longread/lib/types'
-import { createGetterMediumEditorOptions } from 'features/longread/utils'
-import ContentEditable from '../ContentEditable'
-import css from './styles.module.sass'
+import React, { useMemo } from 'react';
+import { Input } from 'antd';
+import cx from 'classnames';
+import styles from 'features/longread/lib/styles.module.sass';
+import type { LongreadPanelElement } from 'features/longread/lib/types';
+import { createGetterMediumEditorOptions } from 'features/longread/utils';
+import css from './styles.module.sass';
+import ContentEditable from '../ContentEditable';
 
 const getMediumEditorOptions = createGetterMediumEditorOptions({
   acceptedButtons: ['bold', 'italic', 'strikethrough', 'anchor', 'superscript'],
-})
+});
 
 const CLASS_NAMES = {
   grey: css.grey,
   'green-blue': css.greenBlue,
   'black-frame': css.blackFrame,
   'red-frame': css.redFrame,
-}
+};
 
 interface LongreadPanelProps {
-  item: LongreadPanelElement
-  editable: boolean
-  onBlur: () => void
-  onFocus: () => void
-  onChange: (item: LongreadPanelElement) => void
+  item: LongreadPanelElement;
+  editable: boolean;
+  onBlur: () => void;
+  onFocus: () => void;
+  onChange: (item: LongreadPanelElement) => void;
 }
 
-const LongreadPanel: React.FC<LongreadPanelProps> = ({ item, onBlur, onFocus, onChange, editable }) => {
-  const className = CLASS_NAMES[item.settings.background]
+const LongreadPanel: React.FC<LongreadPanelProps> = ({
+  item,
+  onBlur,
+  onFocus,
+  onChange,
+  editable,
+}) => {
+  const className = CLASS_NAMES[item.settings.background];
 
   const handles = useMemo(
     () => ({
@@ -35,29 +41,29 @@ const LongreadPanel: React.FC<LongreadPanelProps> = ({ item, onBlur, onFocus, on
         onChange({
           ...item,
           badge: e.target.value,
-        })
+        });
       },
       titleChange(e: React.ChangeEvent<HTMLInputElement>) {
         onChange({
           ...item,
           title: e.target.value,
-        })
+        });
       },
       contentChange(content: string) {
         onChange({
           ...item,
           content,
-        })
+        });
       },
       captionChange(e: React.ChangeEvent<HTMLInputElement>) {
         onChange({
           ...item,
           caption: e.target.value,
-        })
+        });
       },
     }),
-    [item, onChange]
-  )
+    [item, onChange],
+  );
 
   return (
     <div className={cx(css.root, className)}>
@@ -69,7 +75,7 @@ const LongreadPanel: React.FC<LongreadPanelProps> = ({ item, onBlur, onFocus, on
               value={item.badge}
               onChange={handles.badgeChange}
               maxLength={64}
-              placeholder='Введите текст бейджика'
+              placeholder="Введите текст бейджика"
             />
           ) : (
             item.badge
@@ -82,7 +88,7 @@ const LongreadPanel: React.FC<LongreadPanelProps> = ({ item, onBlur, onFocus, on
           value={item.title}
           onChange={handles.titleChange}
           maxLength={250}
-          placeholder='Введите текст заголовка'
+          placeholder="Введите текст заголовка"
         />
       ) : (
         item.title && <div className={css.title}>{item.title}</div>
@@ -103,13 +109,13 @@ const LongreadPanel: React.FC<LongreadPanelProps> = ({ item, onBlur, onFocus, on
           value={item.caption}
           onChange={handles.captionChange}
           maxLength={250}
-          placeholder='Введите подпись'
+          placeholder="Введите подпись"
         />
       ) : (
         item.caption && <div className={css.caption}>{item.caption}</div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(LongreadPanel)
+export default React.memo(LongreadPanel);
